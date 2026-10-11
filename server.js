@@ -1,8 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose'); // This brings in our database helper
 require('dotenv').config(); // This loads your secret .env file
+const cors = require('cors'); // <-- ADDED THIS LINE
+
 const app = express();
-const PORT = process.env.PORT || 5000; // CHANGED: This tells the server to use the port from your .env file
+app.use(cors());
+const PORT = process.env.PORT || 5000; // This tells the server to use the port from your .env file
 
 // This lets our server read information sent by users
 app.use(express.json());
