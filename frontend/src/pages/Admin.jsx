@@ -36,6 +36,23 @@ function Admin() {
       .catch(error => console.error("Error saving service:", error));
   };
 
+  // Function to update booking status
+  const handleStatusChange = (bookingId, newStatus) => {
+    fetch(`http://localhost:5000/api/bookings/${bookingId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus })
+    })
+      .then(response => response.json())
+      .then(updatedBooking => {
+        // Update the table live without reloading the page
+        setBookings(bookings.map(booking => 
+          booking._id === bookingId ? { ...booking, status: updatedBooking.status } : booking
+        ));
+      })
+      .catch(error => console.error("Error updating status:", error));
+  };
+
   return (
     <div className="container">
       <h1 className="header">Admin Dashboard</h1>
@@ -78,7 +95,18 @@ function Admin() {
                 </td>
                 <td>{booking.serviceId?.title || 'Service Unavailable'}</td>
                 <td>{booking.date} at {booking.time}</td>
-                <td><span className={`status-badge status-${booking.status}`}>{booking.status}</span></td>
+                {/* NEW: Interactive dropdown menu for status */}
+                <td>
+                  <select 
+                    value={booking.status} 
+                    onChange={(e) => handleStatusChange(booking._id, e.target.value)}
+                    style={{ padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', border: '1px solid #ccc' }}
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </td>
               </tr>
             ))}
           </tbody>
