@@ -24,4 +24,18 @@ router.get('/', async (req, res) => {
   }
 });
 
+// PUT: Update a booking's status
+router.put('/:id', async (req, res) => {
+  try {
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      req.params.id,
+      { status: req.body.status },
+      { new: true } // Returns the updated document
+    );
+    res.status(200).json(updatedBooking);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update status' });
+  }
+});
+
 module.exports = router;
