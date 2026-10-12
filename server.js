@@ -10,9 +10,13 @@ const PORT = process.env.PORT || 5000; // This tells the server to use the port 
 // This lets our server read information sent by users
 app.use(express.json());
 
-// This connects your serviceRoutes file to the server
+// This connects serviceRoutes file to the server
 const serviceRoutes = require('./routes/serviceRoutes');
 app.use('/api/services', serviceRoutes);
+
+// This connects bookingRoutes file to the server
+const bookingRoutes = require('./routes/bookingRoutes');
+app.use('/api/bookings', bookingRoutes);
 
 // Connect to the MongoDB database
 mongoose.connect(process.env.MONGO_URI)
