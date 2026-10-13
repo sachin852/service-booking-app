@@ -30,4 +30,14 @@ router.post('/', async (req, res) => {
   }
 });
 
+// DELETE: Remove a service by ID
+router.delete('/:id', async (req, res) => {
+  try {
+    await Service.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Service deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete service' });
+  }
+});
+
 module.exports = router;
