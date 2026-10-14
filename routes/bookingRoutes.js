@@ -48,4 +48,14 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// GET: Fetch bookings for a specific customer email
+router.get('/customer/:email', async (req, res) => {
+  try {
+    const bookings = await Booking.find({ customerEmail: req.params.email }).populate('serviceId');
+    res.status(200).json(bookings);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch customer bookings' });
+  }
+});
+
 module.exports = router;
