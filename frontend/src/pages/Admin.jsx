@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../App.css'; 
 
 function Admin() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '', description: '', price: '', duration: '', category: ''
   });
@@ -9,7 +11,6 @@ function Admin() {
   const [services, setServices] = useState([]);
   const [bookings, setBookings] = useState([]);
 
-  // Fetch both services and bookings on load
   useEffect(() => {
     fetchData();
   }, []);
@@ -24,6 +25,11 @@ function Admin() {
       .then(res => res.json())
       .then(data => setBookings(data))
       .catch(err => console.error("Error fetching bookings:", err));
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAdmin');
+    navigate('/login');
   };
 
   const handleChange = (e) => {
@@ -77,7 +83,16 @@ function Admin() {
 
   return (
     <div className="container">
-      <h1 className="header">Admin Dashboard</h1>
+      {/* Top Header with Logout Button */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+        <h1 className="header" style={{ margin: 0 }}>Admin Dashboard</h1>
+        <button 
+          onClick={handleLogout} 
+          style={{ background: '#e74c3c', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}
+        >
+          Logout / Switch Account
+        </button>
+      </div>
       
       {/* 1. Add Service Form */}
       <div style={{ background: '#f9f9f9', padding: '20px', borderRadius: '8px', marginBottom: '40px' }}>
