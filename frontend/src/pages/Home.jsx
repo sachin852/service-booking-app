@@ -4,9 +4,13 @@ import '../App.css';
 function Home() {
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState(null); // Tracks which service was clicked
+
+  // 1. Grab logged-in customer session from localStorage
+  const loggedInCustomer = JSON.parse(localStorage.getItem('customer'));
+
   const [bookingData, setBookingData] = useState({
     customerName: '',
-    customerEmail: '',
+    customerEmail: loggedInCustomer ? loggedInCustomer.email : '', // Pre-filled with Google login email
     date: '',
     time: ''
   });
@@ -41,7 +45,13 @@ function Home() {
       .then(() => {
         alert('Booking confirmed!');
         setSelectedService(null); // Close the modal
-        setBookingData({ customerName: '', customerEmail: '', date: '', time: '' }); // Reset form
+        // Reset form, keeping the email locked to the logged-in user
+        setBookingData({ 
+          customerName: '', 
+          customerEmail: loggedInCustomer ? loggedInCustomer.email : '', 
+          date: '', 
+          time: '' 
+        }); 
       })
       .catch(error => console.error("Error saving booking:", error));
   };
@@ -79,10 +89,50 @@ function Home() {
             <h2>Book {selectedService.title}</h2>
             
             <form onSubmit={submitBooking} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <input name="customerName" placeholder="Full Name" value={bookingData.customerName} onChange={handleInputChange} required style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} />
-              <input name="customerEmail" type="email" placeholder="Email Address" value={bookingData.customerEmail} onChange={handleInputChange} required style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} />
-              <input name="date" type="date" value={bookingData.date} onChange={handleInputChange} required style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} />
-              <input name="time" type="time" value={bookingData.time} onChange={handleInputChange} required style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} />
+              {/* Name - Fully Editable */}
+              <input 
+                name="customerName" 
+                placeholder="Full Name" 
+                value={bookingData.customerName} 
+                onChange={handleInputChange} 
+                required 
+                style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} 
+              />
+              
+              {/* Email - Pre-filled & Locked to Google Account */}
+              <input 
+                name="customerEmail" 
+                type="email" 
+                value={bookingData.customerEmail} 
+                readOnly 
+                required 
+                style={{ 
+                  padding: '10px', 
+                  borderRadius: '4px', 
+                  border: '1px solid #ccc', 
+                  background: '#f1f2f6', 
+                  color: '#555',
+                  cursor: 'not-allowed' 
+                }} 
+              />
+
+              <input 
+                name="date" 
+                type="date" 
+                value={bookingData.date} 
+                onChange={handleInputChange} 
+                required 
+                style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} 
+              />
+
+              <input 
+                name="time" 
+                type="time" 
+                value={bookingData.time} 
+                onChange={handleInputChange} 
+                required 
+                style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }} 
+              />
               
               <div className="btn-group">
                 <button type="button" className="cancel-btn" onClick={() => setSelectedService(null)}>Cancel</button>
